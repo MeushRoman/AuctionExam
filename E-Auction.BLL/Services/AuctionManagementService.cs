@@ -188,6 +188,7 @@ namespace E_Auction.BLL.Services
                 OrganizationId = model.OrganizationId
             };
 
+
             model.FinishDateActual = DateTime.Now;
             model.AuctionStatus = AuctionStatus.Deleted;
 
