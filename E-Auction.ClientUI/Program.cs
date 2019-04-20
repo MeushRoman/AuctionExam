@@ -18,7 +18,7 @@ namespace E_Auction.ClientUI
     {
         static void Main(string[] args)
         {
-            //Mapper.Initialize(p=>
+            //Mapper.Initialize(p =>
             //{
             //    p.AddProfile<OrganizationProfile>();
             //    p.CreateMap<OpenAuctionRequestVm, Auction>();
@@ -27,35 +27,94 @@ namespace E_Auction.ClientUI
 
             //AplicationDbContext dbContext = new AplicationDbContext();
 
-            ////var auctionInfo = (from auction in dbContext.Auctions
-            ////                   join organization in dbContext.Organizations
-            ////                   on auction.OrganizationId equals organization.Id
-            ////                   select new { auction.Description, organization.FullName });
+            //var auctionInfo = (from auction in dbContext.Auctions
+            //                   join organization in dbContext.Organizations
+            //                   on auction.OrganizationId equals organization.Id
+            //                   select new { auction.Description, organization.FullName });
 
-            ////var x = auctionInfo.ToList();
+            //var x = auctionInfo.ToList();
 
-            ////var auctionInfo2 = dbContext.Auctions
-            ////    .Select(p => new { p.Description, p.Organization.FullName })
-            ////    .ToList();
+            //var auctionInfo2 = dbContext.Auctions
+            //    .Select(p => new { p.Description, p.Organization.FullName })
+            //    .ToList();
 
 
-            ////var bids = dbContext.Bids
-            ////    .Where(p => p.AuctionId == auction.Id)
-            ////    .ToList();
+            //var bids = dbContext.Bids
+            //    .Where(p => p.AuctionId == auction.Id)
+            //    .ToList();
 
-            ////var bidSum = bids.Sum(p => p.Price);
+            //var bidSum = bids.Sum(p => p.Price);
 
-            AuctionManagementService service = new AuctionManagementService();
-            var model = service.GetAuctionInfo();
-            foreach (var item in model)
+            //Mapper.Initialize(p =>
+            // {
+            //     p.AddProfile<UserProfile>();
+            //     p.CreateMap<RegistrationNewUserVm, User>();
+            //     p.ValidateInlineMaps = false;
+            // });
+
+            restartAuction();
+
+
+            //UserManagementService service = new UserManagementService(); 
+            //var model = service.UserInfo(2);
+            //Console.WriteLine(model.ToString());
+            //model = service.UserInfo(3);
+            //Console.WriteLine(model.ToString());
+
+            //Console.ReadLine();
+        }
+        public static void CreateUser(int organizationId, int positionId)
+        {
+            RegistrationNewUserVm reg = new RegistrationNewUserVm()
             {
-                Console.WriteLine(item.AuctionName);
-                Console.WriteLine(item.CreatedByOrganization);
+                Email = "test@mail.ru",
+                Password = "1234",
+                FirstName = "fname",
+                Address = "testAdress",
+                LastName = "lname",
+                PositionId = positionId,
+                OrganizationId = organizationId
+            };
 
-                Console.WriteLine();
-            }
+            UserManagementService userService = new UserManagementService();
+            userService.RegistrationUser(reg);
+        }
+        public static void CreateOrganization()
+        {
+            OrganizationManagementService organizationService = new OrganizationManagementService();
 
-            Console.ReadLine();
+            OpenOrganizationRequestVm openOrganization = new OpenOrganizationRequestVm()
+            {
+                FullName = "TestOrganization",
+                IdentificationNumber = "1111-2222-3333",
+                OrganizationType = "too"
+            };
+            organizationService.OpenOrganization(openOrganization);
+        }
+        public static void OpenAuction(int organizationId)
+        {
+
+            OpenAuctionRequestVm openAuction = new OpenAuctionRequestVm()
+            {
+                Category = "test",
+                Description = "TestDiscription",
+                FinishDateExpected = DateTime.Now.AddDays(5),
+                PriceAtMinimum = 300000,
+                PriceAtStart = 500000,
+                PriceChangeStep = 50000,
+                ShippingAddress = "TestShippingAdress",
+                ShippingConditions = "TestShippingConditions",
+                StartDate = DateTime.Now            
+            };
+
+            AuctionManagementService auctionService = new AuctionManagementService();
+            auctionService.OpenAuction(openAuction, organizationId);        
+        }
+
+        public static void restartAuction()
+        {
+            AuctionManagementService auctionService = new AuctionManagementService();
+            auctionService.RestartAuction(3, DateTime.Now.AddDays(8));
         }
     }
 }

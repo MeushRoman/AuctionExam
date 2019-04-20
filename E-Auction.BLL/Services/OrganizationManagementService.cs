@@ -19,26 +19,25 @@ namespace E_Auction.BLL.Services
             if (model == null)
                 throw new ArgumentNullException($"{typeof(OpenOrganizationRequestVm).Name} is null");
 
-            var checkOrganization = /*(from o in _aplicationDbContext.Organizations
-                                    where o.IdentificationNumber == model.IdentificationNumber ||
-                                    o.FullName == model.FullName
-                                    select o).ToList(); */
-                                    _aplicationDbContext.Organizations
-                                    .SingleOrDefault(p => p.IdentificationNumber == model.IdentificationNumber ||
-                                        p.FullName == model.FullName);
+            var checkOrganization = _aplicationDbContext.Organizations
+                                    .SingleOrDefault(p => p.IdentificationNumber == model.IdentificationNumber || p.FullName == model.FullName);
 
             var checkOrganizationType = _aplicationDbContext.OrganizationTypes
-                .SingleOrDefault(p => p.Name == model.OrganizationType);
+                                    .SingleOrDefault(p => p.Name == model.OrganizationType);
 
             if (checkOrganization != null || checkOrganizationType == null)
                 throw new Exception("Model validation error!");
 
-            var organization = Mapper.Map<Organization>(model);
-            organization.OrganizationType = checkOrganizationType;
-            organization.RegistrationDate = DateTime.Now;
+            Organization organization = new Organization()
+            {
+                FullName = model.FullName,
+                IdentificationNumber = model.IdentificationNumber,
+                OrganizationType = checkOrganizationType,
+                RegistrationDate = DateTime.Now
+            };
 
             _aplicationDbContext.Organizations.Add(organization);
-            _aplicationDbContext.SaveChanges();         
+            _aplicationDbContext.SaveChanges();
         }
 
 

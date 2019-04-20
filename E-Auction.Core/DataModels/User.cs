@@ -28,10 +28,10 @@ namespace E_Auction.Core.DataModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
         public UserPosition()
         {
-          
+            Users = new List<User>();
         }
     }
 }

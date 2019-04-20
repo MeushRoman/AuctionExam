@@ -10,7 +10,7 @@ namespace E_Auction.Core.ViewModels
     {
         public int AuctionId { get; set; }
         public string Status { get; set; }
-        public string AuctionType { get; set; }
+        public string AuctionCategory { get; set; }
         public string OrganizationName { get; set; }
         public string ShippingAddress { get; set; }
         public string ShippingConditions { get; set; }

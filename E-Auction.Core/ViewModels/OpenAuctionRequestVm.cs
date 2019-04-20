@@ -16,6 +16,6 @@ namespace E_Auction.Core.ViewModels
         public decimal PriceAtMinimum { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime FinishDateExpected { get; set; }
-        public string AuctionCategory { get; set; }
+        public string Category { get; set; }
     }
 }

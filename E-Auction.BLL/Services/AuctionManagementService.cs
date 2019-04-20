@@ -33,21 +33,31 @@ namespace E_Auction.BLL.Services
                 .Where(p => p.AuctionStatus == AuctionStatus.Active)
                 .Count() < maximumAllowedActiveAuctions;
 
-            var categoryCheck = _aplicationDbContext.AuctionCategories
-                .SingleOrDefault(p => p.Name == model.AuctionCategory);
-
-            if (categoryCheck == null)
-                throw new Exception("Ошибка валидации модели!");
-
             if (!auctionsCheck)
                 throw new OpenAuctionProcessException(model, "Превышено максимальное количество активных аукционов!");
 
-            var auctionModel = Mapper.Map<Auction>(model);
-            auctionModel.AuctionStatus = AuctionStatus.Active;
-            auctionModel.Category = categoryCheck;
-            auctionModel.OrganizationId = organizationId;
+            var categoryCheck = _aplicationDbContext.AuctionCategories
+                .SingleOrDefault(p => p.Name == model.Category);
 
-            _aplicationDbContext.Auctions.Add(auctionModel);
+            if (categoryCheck == null)
+                throw new Exception("Ошибка валидации модели!");           
+
+            Auction auction = new Auction()
+            {
+                Description = model.Description,
+                ShippingAddress = model.ShippingAddress,
+                ShippingConditions = model.ShippingConditions,
+                PriceAtStart = model.PriceAtStart,
+                PriceChangeStep = model.PriceChangeStep,
+                PriceAtMinimum = model.PriceAtMinimum,
+                StartDate = model.StartDate,
+                FinishDateExpected = model.FinishDateExpected,
+                AuctionStatus = AuctionStatus.Active,
+                Category = categoryCheck,
+                OrganizationId = organizationId
+            };
+
+            _aplicationDbContext.Auctions.Add(auction);
             _aplicationDbContext.SaveChanges();
         }
 
@@ -92,7 +102,7 @@ namespace E_Auction.BLL.Services
         {
             var bidExists = _aplicationDbContext.Bids
                 .Find(BidId);
-            if(bidExists==null)
+            if (bidExists == null)
                 throw new Exception("Bid не найден!");
             if ((bidExists.Auction.FinishDateExpected - DateTime.Now).Days < 1)
                 throw new Exception("Ставку нельзя удалить! До завершение аукциона осталось менше 24 часов.");
@@ -102,6 +112,7 @@ namespace E_Auction.BLL.Services
                 _aplicationDbContext.SaveChanges();
             }
         }
+
 
         public IEnumerable<AuctionInfoVm> GetAuctionInfo()
         {
@@ -123,17 +134,24 @@ namespace E_Auction.BLL.Services
         public FullAuctionInfoVm GetAuctionDetailedInfo(int auctionId)
         {
 
-            var auction = _aplicationDbContext.Auctions.SingleOrDefault(p => p.Id == auctionId); 
+            var auction = _aplicationDbContext.Auctions.Find
+                (auctionId);
 
             if (auction == null)
                 throw new Exception("Invalid auction ID");
 
-            FullAuctionInfoVm model = new FullAuctionInfoVm()
+            string category = _aplicationDbContext.AuctionCategories
+                .Find(auction.CategoryId).Name;
+
+            string organizationName = _aplicationDbContext.Organizations
+                .Find(auction.OrganizationId).FullName;
+
+            return new FullAuctionInfoVm()
             {
                 AuctionId = auction.Id,
                 Status = auction.AuctionStatus.ToString(),
-                AuctionType = auction.GetType().ToString(),
-                OrganizationName = auction.Organization.FullName,
+                AuctionCategory = category,
+                OrganizationName = organizationName,
                 ShippingAddress = auction.ShippingAddress,
                 ShippingConditions = auction.ShippingConditions,
                 StartPrice = auction.PriceAtStart,
@@ -142,21 +160,45 @@ namespace E_Auction.BLL.Services
                 StartDate = auction.StartDate,
                 FinishDate = auction.FinishDateExpected,
                 FinishDateAtActual = auction.FinishDateActual
-
             };
-            return model;
         }
 
         //перезапуск аукциона
-        public void RestartAuction(int auctionId)
+        public void RestartAuction(int auctionId, DateTime FinishDate)
         {
-            
+            var model = _aplicationDbContext.Auctions
+                .Include("Category")
+               .FirstOrDefault(p => p.Id == auctionId);
+
+            if (model.FinishDateExpected == FinishDate || FinishDate <= DateTime.Now)
+                throw new Exception("incorrect FinishDate");                    
+
+            Auction auction = new Auction()
+            {
+                Description = model.Description,
+                ShippingAddress = model.ShippingAddress,
+                ShippingConditions = model.ShippingConditions,
+                PriceAtStart = model.PriceAtStart,
+                PriceChangeStep = model.PriceChangeStep,
+                PriceAtMinimum = model.PriceAtMinimum,
+                AuctionStatus = AuctionStatus.Active,
+                StartDate = DateTime.Now,
+                FinishDateExpected = FinishDate,
+                Category = model.Category,
+                OrganizationId = model.OrganizationId
+            };
+
+            model.FinishDateActual = DateTime.Now;
+            model.AuctionStatus = AuctionStatus.Deleted;
+
+            _aplicationDbContext.Auctions.Add(auction);
+            _aplicationDbContext.SaveChanges();
         }
 
         //Выбрать победителя аукциона
-        public void ElectWinnerInAuction(int id)
+        public void ElectWinnerInAuction(int userId)
         {
-
+            
         }
 
         public AuctionManagementService()

@@ -19,5 +19,6 @@ namespace E_Auction.BLL.Mappers
                 .ForMember(p => p.IdentificationNumber,
                     opt => opt.MapFrom(p => p.IdentificationNumber));
         }
+        
     }
 }

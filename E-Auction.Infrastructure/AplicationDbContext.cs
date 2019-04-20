@@ -20,7 +20,17 @@ namespace E_Auction.Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<UserPosition> UserPositions { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {         
+        {
+            modelBuilder
+                .Entity<UserPosition>()
+                .HasMany(p => p.Users)
+                .WithRequired(p => p.Position)
+                .HasForeignKey(p => p.PositionId);
+
+            modelBuilder.Entity<Organization>()
+                .HasMany(p => p.Users)
+                .WithRequired(p => p.Organization)
+                .HasForeignKey(p => p.OrganizationId);
 
             modelBuilder
                 .Entity<Organization>()

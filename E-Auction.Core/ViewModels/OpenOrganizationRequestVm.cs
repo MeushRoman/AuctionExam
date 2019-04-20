@@ -11,5 +11,6 @@ namespace E_Auction.Core.ViewModels
         public string FullName { get; set; }
         public string IdentificationNumber { get; set; }
         public string OrganizationType { get; set; }
+        
     }
 }

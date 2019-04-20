@@ -9,7 +9,8 @@ namespace E_Auction.Core.DataModels
     public enum AuctionStatus
     {
         Active = 1,
-        Finished = 2
+        Finished = 2,
+        Deleted = 3
     }
 
     public enum BidStatus
