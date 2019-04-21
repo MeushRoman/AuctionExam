@@ -14,7 +14,8 @@ namespace E_Auction.BLL.Services
     {
         private readonly AplicationDbContext _aplicationDbContext;
 
-        public void OpenOrganization(OpenOrganizationRequestVm model)
+        //добавить орагинизвцию
+        public int OpenOrganization(OpenOrganizationRequestVm model)
         {
             if (model == null)
                 throw new ArgumentNullException($"{typeof(OpenOrganizationRequestVm).Name} is null");
@@ -33,13 +34,78 @@ namespace E_Auction.BLL.Services
                 FullName = model.FullName,
                 IdentificationNumber = model.IdentificationNumber,
                 OrganizationType = checkOrganizationType,
-                RegistrationDate = DateTime.Now
+                RegistrationDate = DateTime.Now,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Adress = model.Adress,
+                LinkToSite = model.LinkToSite
             };
 
             _aplicationDbContext.Organizations.Add(organization);
             _aplicationDbContext.SaveChanges();
+            return organization.Id;
         }
 
+        //добавление типа организации
+        public int AddTypeOrganization(CreateOrganizationTypeVm model)
+        {
+            var checkType = _aplicationDbContext.OrganizationTypes.FirstOrDefault(p => p.Name == model.Name);
+            if (checkType != null)
+                throw new Exception("incorrect model!");
+
+            OrganizationType type = new OrganizationType()
+            {
+                Name = model.Name
+            };
+
+            _aplicationDbContext.OrganizationTypes.Add(type);
+            _aplicationDbContext.SaveChanges();
+            return type.Id;
+        }
+
+        //изменение данных организаии
+        public void ChangeOrganization(ChangeOrganizationVm model, int organizationId) 
+        {
+            var organization = _aplicationDbContext.Organizations.FirstOrDefault(p => p.Id == organizationId);
+
+            if (organization == null)
+                throw new Exception("Incorrect organizationId");
+           
+            organization.FullName = model.FullName;
+            organization.IdentificationNumber = model.IdentificationNumber;
+            organization.RegistrationDate = model.RegistrationDate;
+            organization.OrganizationTypeId = model.OrganizationTypeId;
+            organization.Email = model.Email;
+            organization.PhoneNumber = model.PhoneNumber;
+            organization.Adress = model.Adress;
+            organization.LinkToSite = model.LinkToSite;
+
+            _aplicationDbContext.SaveChanges();
+        }
+
+        //получить информацию по организации
+        public FullOrganizationInfoVm FullOrganizationInfo(int organizationId)
+        {
+            var checkOrganization = _aplicationDbContext
+                .Organizations            
+                .FirstOrDefault(p => p.Id == organizationId);
+
+            if (checkOrganization == null)
+                throw new Exception("Invalid organizationId");
+
+            string organizationType = _aplicationDbContext.OrganizationTypes.Find(checkOrganization.OrganizationTypeId).Name;
+
+            return new FullOrganizationInfoVm()
+            {
+                Type = checkOrganization.OrganizationType.Name,
+                FullName = checkOrganization.FullName,
+                IdentificationNumber = checkOrganization.IdentificationNumber,
+                RegistrationDate = checkOrganization.RegistrationDate,
+                Auctions = checkOrganization.Auctions.ToList(),
+                Bids = checkOrganization.Bids.ToList(),
+                Users = checkOrganization.Users.ToList()
+            };
+        }
 
         public OrganizationManagementService()
         {

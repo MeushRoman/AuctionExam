@@ -18,58 +18,25 @@ namespace E_Auction.ClientUI
     {
         static void Main(string[] args)
         {
-            //Mapper.Initialize(p =>
-            //{
-            //    p.AddProfile<OrganizationProfile>();
-            //    p.CreateMap<OpenAuctionRequestVm, Auction>();
-            //    p.ValidateInlineMaps = false;
-            //});
-
-            //AplicationDbContext dbContext = new AplicationDbContext();
-
-            //var auctionInfo = (from auction in dbContext.Auctions
-            //                   join organization in dbContext.Organizations
-            //                   on auction.OrganizationId equals organization.Id
-            //                   select new { auction.Description, organization.FullName });
-
-            //var x = auctionInfo.ToList();
-
-            //var auctionInfo2 = dbContext.Auctions
-            //    .Select(p => new { p.Description, p.Organization.FullName })
-            //    .ToList();
-
-
-            //var bids = dbContext.Bids
-            //    .Where(p => p.AuctionId == auction.Id)
-            //    .ToList();
-
-            //var bidSum = bids.Sum(p => p.Price);
-
-            //Mapper.Initialize(p =>
-            // {
-            //     p.AddProfile<UserProfile>();
-            //     p.CreateMap<RegistrationNewUserVm, User>();
-            //     p.ValidateInlineMaps = false;
-            // });
-
-            restartAuction();
-
-
-            //UserManagementService service = new UserManagementService(); 
-            //var model = service.UserInfo(2);
-            //Console.WriteLine(model.ToString());
-            //model = service.UserInfo(3);
-            //Console.WriteLine(model.ToString());
-
-            //Console.ReadLine();
+           // CreateUser(1, createUserPosition())   ;
+            //CreateOrganization();
+            OrganizationInfo();
         }
+
+        public static int createUserPosition()
+        {
+            UserManagementService service = new UserManagementService();
+            //service.CreateUserPosition("Director");
+            return service.CreateUserPosition("Director");
+        }
+
         public static void CreateUser(int organizationId, int positionId)
         {
             RegistrationNewUserVm reg = new RegistrationNewUserVm()
             {
-                Email = "test@mail.ru",
+                Email = "test2@mail.ru",
                 Password = "1234",
-                FirstName = "fname",
+                FirstName = "Director1",
                 Address = "testAdress",
                 LastName = "lname",
                 PositionId = positionId,
@@ -87,7 +54,7 @@ namespace E_Auction.ClientUI
             {
                 FullName = "TestOrganization",
                 IdentificationNumber = "1111-2222-3333",
-                OrganizationType = "too"
+                OrganizationType = "TOO"
             };
             organizationService.OpenOrganization(openOrganization);
         }
@@ -109,6 +76,35 @@ namespace E_Auction.ClientUI
 
             AuctionManagementService auctionService = new AuctionManagementService();
             auctionService.OpenAuction(openAuction, organizationId);        
+        }
+        public static void CreateCategoryAuction()
+        {
+            CreateAuctionCategoryVm newCategory = new CreateAuctionCategoryVm()
+            {
+                Name = "NameCategory",
+                Discription = "TestDiscription"               
+            };
+
+            AuctionManagementService service = new AuctionManagementService();
+            service.CreateAuctionCategory(newCategory);
+
+        }
+        public static void AddTypeOrganization()
+        {
+            CreateOrganizationTypeVm model = new CreateOrganizationTypeVm()
+            {
+                Name = "ИП"
+            };
+
+            OrganizationManagementService service = new OrganizationManagementService();
+            service.AddTypeOrganization(model);      
+        }
+
+        public static void OrganizationInfo()
+        {
+            OrganizationManagementService service = new OrganizationManagementService();
+            Console.WriteLine(service.FullOrganizationInfo(1)); 
+            
         }
 
         public static void restartAuction()

@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace E_Auction.BLL.Services
 {
-   
+
     public class UserManagementService
     {
         private readonly AplicationDbContext _aplicationDbContext;
 
-        //создание пользователя
-        public void RegistrationUser(RegistrationNewUserVm model)
+        //регистрация
+        public int RegistrationUser(RegistrationNewUserVm model)
         {
             if (model == null)
                 throw new ArgumentNullException($"{typeof(RegistrationNewUserVm).Name} is null");
@@ -43,14 +43,64 @@ namespace E_Auction.BLL.Services
                 OrganizationId = model.OrganizationId,
                 PositionId = model.PositionId
             };
-            
+
 
             _aplicationDbContext.Users.Add(user);
-            _aplicationDbContext.SaveChanges(); 
+            _aplicationDbContext.SaveChanges();
+            return user.Id;
         }
 
+        //создать новую позицию
+        public int CreateUserPosition(string newUserPosition)
+        {
+            var checkPosition = _aplicationDbContext.UserPositions.FirstOrDefault(p => p.Name == newUserPosition);
+
+            if (checkPosition != null)
+                throw new Exception("Incorrect userPosition");
+
+            UserPosition position = new UserPosition()
+            {
+                Name = newUserPosition
+            };
+
+            _aplicationDbContext.UserPositions.Add(position);
+            _aplicationDbContext.SaveChanges();
+            return position.Id;
+        }
         //изменить информацию по сотруднику
 
+        public void ChangeUserInfo(ChangeUserInfoVm model)
+        {
+            
+        }
+
+        public void ChangeUserEmail(UserAuthorizationVm model, string newEmail)
+        {
+
+        }
+
+        //смена пароля
+        public void ChangeUserPassword(UserAuthorizationVm model, string newPassword)
+        {
+            User user = Autorization(model);
+            user.Password = newPassword;
+
+            _aplicationDbContext.SaveChanges();
+        }
+
+        //авторизация
+        public User Autorization(UserAuthorizationVm model)
+        {
+            if (model == null)
+                throw new Exception("Invalid model");
+
+            var checkUser = _aplicationDbContext.Users.FirstOrDefault(p => p.Email == model.Email && p.Password == model.Password);
+
+            if (checkUser == null)
+                throw new Exception("Invalid Email or Password!");
+
+            return checkUser;
+        }
 
         //получить информацию по сотруднику
 
@@ -67,22 +117,17 @@ namespace E_Auction.BLL.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Password = user.Password,
-                Adress = user.Address,               
+                Adress = user.Address,
                 PositionId = user.PositionId
             };
 
             return model;
         }
-
-        //получить информацию по сотрудникам из организации
-
-
-
-
+       
 
         public UserManagementService()
         {
-            _aplicationDbContext = new AplicationDbContext();          
-        }        
+            _aplicationDbContext = new AplicationDbContext();
+        }
     }
 }

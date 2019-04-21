@@ -54,11 +54,19 @@
     <Compile Include="Exceptions\OpenAuctionProcessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AuctionInfoVm.cs" />
+    <Compile Include="ViewModels\AuctionWinnerVm.cs" />
+    <Compile Include="ViewModels\ChangeOrganizationVm.cs" />
+    <Compile Include="ViewModels\ChangeUserInfoVm.cs" />
+    <Compile Include="ViewModels\CreateAuctionCategoryVm.cs" />
+    <Compile Include="ViewModels\CreateOrganizationTypeVm.cs" />
+    <Compile Include="ViewModels\CreateUserPositionVm.cs" />
     <Compile Include="ViewModels\FullAuctionInfoVm.cs" />
+    <Compile Include="ViewModels\FullOrganizationInfoVm.cs" />
     <Compile Include="ViewModels\MakeBidVm.cs" />
     <Compile Include="ViewModels\OpenAuctionRequestVm.cs" />
     <Compile Include="ViewModels\OpenOrganizationRequestVm.cs" />
     <Compile Include="ViewModels\RegistrationNewUserVm.cs" />
+    <Compile Include="ViewModels\UserAuthorizationVm.cs" />
     <Compile Include="ViewModels\UserInfoVm.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace E_Auction.Core.ViewModels
 {
-    public class OpenOrganizationRequestVm
+    public class ChangeOrganizationVm
     {
         public string FullName { get; set; }
         public string IdentificationNumber { get; set; }
-        public string OrganizationType { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public int OrganizationTypeId { get; set; }
         public string Email { get; set; }
         public string Adress { get; set; }
         public string PhoneNumber { get; set; }

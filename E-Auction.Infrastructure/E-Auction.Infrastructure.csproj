@@ -73,6 +73,14 @@
     <Compile Include="Migrations\201904181440317_addPass.Designer.cs">
       <DependentUpon>201904181440317_addPass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904211056401_AuctionWinner.cs" />
+    <Compile Include="Migrations\201904211056401_AuctionWinner.Designer.cs">
+      <DependentUpon>201904211056401_AuctionWinner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904211636142_updateOrganizationInfo.cs" />
+    <Compile Include="Migrations\201904211636142_updateOrganizationInfo.Designer.cs">
+      <DependentUpon>201904211636142_updateOrganizationInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AuctionRepository.cs" />
@@ -108,6 +116,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904181440317_addPass.resx">
       <DependentUpon>201904181440317_addPass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904211056401_AuctionWinner.resx">
+      <DependentUpon>201904211056401_AuctionWinner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904211636142_updateOrganizationInfo.resx">
+      <DependentUpon>201904211636142_updateOrganizationInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

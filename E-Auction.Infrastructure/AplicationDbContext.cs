@@ -13,6 +13,7 @@ namespace E_Auction.Infrastructure
         public DbSet<Auction> Auctions { get; set; }
         public DbSet<AuctionFileMeta> AuctionFiles { get; set; }
         public DbSet<AuctionCategory> AuctionCategories { get; set; }
+        public DbSet<AuctionWinner> AuctionsWinners { get; set; }
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<OrganizationType> OrganizationTypes { get; set; }
@@ -21,6 +22,16 @@ namespace E_Auction.Infrastructure
         public DbSet<UserPosition> UserPositions { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Auction>()
+                .HasOptional(p => p.AuctionWinnner)
+                .WithRequired(p => p.Auctions);
+
+            modelBuilder.Entity<Organization>()
+                .HasMany(p => p.AuctionWinner)
+                .WithRequired(p => p.Organization)
+                .HasForeignKey(p => p.OrganizationId);
+
             modelBuilder
                 .Entity<UserPosition>()
                 .HasMany(p => p.Users)

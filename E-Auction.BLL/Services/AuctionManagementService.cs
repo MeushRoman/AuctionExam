@@ -19,7 +19,7 @@ namespace E_Auction.BLL.Services
         private readonly IAuctionRepository auctionRepository;
 
         //открыть аукцион
-        public void OpenAuction(OpenAuctionRequestVm model, int organizationId)
+        public int OpenAuction(OpenAuctionRequestVm model, int organizationId)
         {
             if (model == null)
                 throw new ArgumentNullException($"{typeof(OpenAuctionRequestVm).Name} is null");
@@ -59,6 +59,7 @@ namespace E_Auction.BLL.Services
 
             _aplicationDbContext.Auctions.Add(auction);
             _aplicationDbContext.SaveChanges();
+            return auction.Id;
         }
 
         //Сделать Ставку На Аукцион
@@ -113,7 +114,7 @@ namespace E_Auction.BLL.Services
             }
         }
 
-
+        //получить информацию по аукционам
         public IEnumerable<AuctionInfoVm> GetAuctionInfo()
         {
             var auctions = _aplicationDbContext.Auctions
@@ -162,6 +163,24 @@ namespace E_Auction.BLL.Services
                 FinishDateAtActual = auction.FinishDateActual
             };
         }
+        
+        //добавление категории аукциона
+        public int CreateAuctionCategory(CreateAuctionCategoryVm model)
+        {
+            var checkCategory = _aplicationDbContext.AuctionCategories.FirstOrDefault(p => p.Name == model.Name);
+            if (checkCategory != null)
+                throw new Exception("incorrect model!");
+
+            AuctionCategory category = new AuctionCategory()
+            {
+                Name = model.Name,
+                Description = model.Discription             
+            };
+
+            _aplicationDbContext.AuctionCategories.Add(category);
+            _aplicationDbContext.SaveChanges();
+            return category.Id;
+        }
 
         //перезапуск аукциона
         public void RestartAuction(int auctionId, DateTime FinishDate)
@@ -188,18 +207,24 @@ namespace E_Auction.BLL.Services
                 OrganizationId = model.OrganizationId
             };
 
-
             model.FinishDateActual = DateTime.Now;
             model.AuctionStatus = AuctionStatus.Deleted;
 
             _aplicationDbContext.Auctions.Add(auction);
-            _aplicationDbContext.SaveChanges();
+            _aplicationDbContext.SaveChanges();           
         }
 
         //Выбрать победителя аукциона
-        public void ElectWinnerInAuction(int userId)
+        public void ElectWinnerInAuction(AuctionWinnerVm model)
         {
-            
+            AuctionWinner auctionWinner = new AuctionWinner()
+            {
+                AuctionId = model.AuctionId,
+                OrganizationId =model.OrganizationId
+            };
+
+            _aplicationDbContext.AuctionsWinners.Add(auctionWinner);
+            _aplicationDbContext.SaveChanges();
         }
 
         public AuctionManagementService()

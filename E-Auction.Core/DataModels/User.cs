@@ -17,12 +17,7 @@ namespace E_Auction.Core.DataModels
         public string Email { get; set; }
         public string Password { get; set; }
         public int PositionId { get; set; }
-        public UserPosition Position { get; set; }
-        public User()
-        {
-                
-        }
-
+        public UserPosition Position { get; set; }       
     }
     public class UserPosition
     {
