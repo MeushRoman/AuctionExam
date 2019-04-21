@@ -67,16 +67,35 @@ namespace E_Auction.BLL.Services
             _aplicationDbContext.SaveChanges();
             return position.Id;
         }
-        //изменить информацию по сотруднику
 
-        public void ChangeUserInfo(ChangeUserInfoVm model)
+        //изменить информацию пользователя
+        public void ChangeUserInfo(ChangeUserInfoVm model, int userId)
         {
-            
+            if (model == null)
+                throw new Exception("incorrect model!");
+
+            var user = _aplicationDbContext.Users.FirstOrDefault(p => p.Id == userId);
+
+            if (user == null)
+                throw new Exception("invalid userId!");
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Address = model.Address;
+            user.PositionId = model.PositionId;          
         }
 
-        public void ChangeUserEmail(UserAuthorizationVm model, string newEmail)
+        //смена емейла
+        public void ChangeUserEmail(int userId, string newEmail)
         {
+            var user = _aplicationDbContext.Users.FirstOrDefault(p=>p.Id == userId);
 
+            if (user == null)
+                throw new Exception("invalid userId");
+
+            user.Email = newEmail;
+
+            _aplicationDbContext.SaveChanges();
         }
 
         //смена пароля
@@ -102,8 +121,7 @@ namespace E_Auction.BLL.Services
             return checkUser;
         }
 
-        //получить информацию по сотруднику
-
+        //получить информацию по пользователю
         public UserInfoVm UserInfo(int userId)
         {
             var user = _aplicationDbContext.Users.SingleOrDefault(p => p.Id == userId);
